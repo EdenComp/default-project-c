@@ -1,0 +1,9 @@
+project_binary
+unit_tests
+*~
+*.a
+*.o
+*.gcda
+*.gcno
+.idea/
+.vscode/
