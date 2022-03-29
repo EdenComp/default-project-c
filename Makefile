@@ -5,30 +5,35 @@
 ## Makefile
 ##
 
-SRC =	src/project.c
+SRC			=	src/project.c
 
-MAIN = 	src/main.c
+MAIN		= 	src/main.c
 
-OBJ = 	$(SRC:.c=.o) \
-		$(MAIN:.c=.o)
+OBJ			=	$(SRC:.c=.o)
 
-NAME = project
-INC = include/
+OBJ_M		=	$(MAIN:.c=.o)
 
-TEST = unit_tests
-TESTS = tests/test_project.c
+NAME		=	project
+INC			=	include/
+LIBINC		=	lib/my/include/
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic
-CPPFLAGS = -I include/
-TESTFLAGS = --coverage -lcriterion
-LDLIBS = lib/libmy.a
+TEST		=	unit_tests
+TESTS		=	tests/test_project.c
+
+CC			=	gcc
+RM			=	rm -f
+
+CFLAGS		=	-Wall -Wextra -Wpedantic
+CPPFLAGS	=	-iquote $(INC)
+TESTFLAGS	=	--coverage -lcriterion
+LDLIBS		=	-lmy
+LDFLAGS		=	-L lib/my/
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(OBJ_M)
 	make -C lib/my/
-	$(CC) -o $(NAME) $(OBJ) $(LDLIBS)
+	$(CC) -o $(NAME) $(OBJ) $(OBJ_M) $(LDLIBS) $(LDFLAGS)
 
 clean:
 	$(RM) $(OBJ)
@@ -42,10 +47,11 @@ fclean:	clean
 	make fclean -C lib/my/
 
 re:	fclean all
+	make re -C lib/my/
 
-tests_run:
+tests_run: $(OBJ)
 	$(RM) *.gcda
 	$(RM) *.gcno
-	make re -C lib/my/
-	$(CC) -o $(TEST) $(SRC) $(TESTS) -I $(INC) $(LDLIBS) $(TESTFLAGS)
+	make -C lib/my/
+	$(CC) -o $(TEST) $(OBJ) $(TESTS) $(TESTFLAGS)
 	./$(TEST)
