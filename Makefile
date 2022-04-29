@@ -24,7 +24,7 @@ CC			=	gcc
 RM			=	rm -f
 
 CFLAGS		=	-Wall -Wextra -Wpedantic
-CPPFLAGS	=	-iquote $(INC)
+CPPFLAGS	=	-iquote $(INC) -iquote $(LIBINC)
 TESTFLAGS	=	--coverage -lcriterion
 LDLIBS		=	-lmy
 LDFLAGS		=	-L lib/my/
@@ -37,6 +37,7 @@ $(NAME): $(OBJ) $(OBJ_M)
 
 clean:
 	$(RM) $(OBJ)
+	$(RM) $(OBJ_M)
 	$(RM) *.gcda
 	$(RM) *.gcno
 	make clean -C lib/my/
@@ -47,11 +48,10 @@ fclean:	clean
 	make fclean -C lib/my/
 
 re:	fclean all
-	make re -C lib/my/
 
 tests_run: $(OBJ)
 	$(RM) *.gcda
 	$(RM) *.gcno
 	make -C lib/my/
-	$(CC) -o $(TEST) $(OBJ) $(TESTS) $(TESTFLAGS)
+	$(CC) -o $(TEST) $(SRC) $(TESTS) $(TESTFLAGS) $(LDLIBS) $(LDFLAGS)
 	./$(TEST)

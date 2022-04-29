@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** Default
+** project
 ** File description:
 ** Unit tests
 */
